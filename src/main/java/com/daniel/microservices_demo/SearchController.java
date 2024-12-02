@@ -3,6 +3,10 @@ package com.daniel.microservices_demo;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import com.daniel.microservices_demo.kafka.KafkaProducer;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class SearchController {
+
+    @Autowired
+    private KafkaProducer kafkaProducer;
 
     private final QueryRepository queryRepository;
 
@@ -36,6 +43,13 @@ public class SearchController {
         DumpSaver dumpSaver = new DumpSaver();
         return dumpSaver.saveQueries(queryRepository.findAll());
     }
+
+    @GetMapping("/kafka")
+    public String kafkaSendMessage() {
+        kafkaProducer.sendMessage("moja testowa wiadomość");
+        return "wiadomość wysłana";
+    }
+    
     
 
 }
