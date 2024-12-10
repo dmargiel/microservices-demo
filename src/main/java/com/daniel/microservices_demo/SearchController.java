@@ -41,7 +41,9 @@ public class SearchController {
     @GetMapping("/dump")
     public String dump() {
         DumpSaver dumpSaver = new DumpSaver();
-        return dumpSaver.saveQueries(queryRepository.findAll());
+        String message = dumpSaver.saveQueries(queryRepository.findAll());
+        kafkaProducer.sendMessage(message);
+        return message;
     }
 
     @GetMapping("/kafka")
@@ -49,7 +51,5 @@ public class SearchController {
         kafkaProducer.sendMessage("moja testowa wiadomość");
         return "wiadomość wysłana";
     }
-    
-    
 
 }
